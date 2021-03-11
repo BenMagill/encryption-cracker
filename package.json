@@ -1,0 +1,16 @@
+{
+  "name": "encryptioncracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "EncryptionCracker.js",
+  "dependencies": {
+    "check-word": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

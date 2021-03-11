@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "ES2020",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [ "node_modules" ],
+    // "include": ["check-word.d.ts"]
+}
