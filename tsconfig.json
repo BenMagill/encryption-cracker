@@ -6,8 +6,8 @@
         "noImplicitReturns": true,
         "moduleResolution": "Node",
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "outDir": "build/"
     },
-    "exclude": [ "node_modules" ],
-    // "include": ["check-word.d.ts"]
+    "exclude": [ "node_modules" ]
 }
