@@ -2,11 +2,15 @@
   "name": "encryptioncracker",
   "version": "1.0.0",
   "description": "",
-  "main": "EncryptionCracker.js",
+  "main": "build/index.js",
   "dependencies": {
-    "check-word": "^1.1.0"
+    "check-word": "^1.1.0",
+    "commander": "^7.1.0",
+    "es-main": "^1.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^14.14.34"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

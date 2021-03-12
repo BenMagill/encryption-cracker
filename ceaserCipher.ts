@@ -1,28 +1,7 @@
-import findWords from "./getWords.js"
-import frequencyTable from "./frequencyData.js"
-
-console.log("hi")
-const frequency = (str: string ) => {
-
-    const dict: {[key: string]: number} = {}
-    str.split("").forEach((letter: string) => {
-        letter = letter.toLowerCase()
-        if (letter === " ") letter = "SPACE"
-        var count = dict[letter]
-        if (count) {
-            dict[letter] = count+1
-        } else {
-            dict[letter] = 1
-        }
-    });
-    for (const key in dict) {
-        if (Object.hasOwnProperty.call(dict, key)) {
-            const value = dict[key];
-            dict[key] = value/str.split("").length
-        }
-    }
-    return dict
-}
+import findWords from "./utility/getWords.js"
+import frequencyTable from "./utility/frequencyData.js"
+import frequency from "./utility/getFrequency.js"
+import {ICeaserOptions} from "./interfaces"
 
 const decrypt = (data: string, key: number, alphabet: string) => {
     var array = data.split("")
@@ -59,30 +38,14 @@ const decrypt = (data: string, key: number, alphabet: string) => {
  *          Make it so the longer the word the more the weight added is?
  *              For example "and" is common and could possibly be found in other outputs while "because" has little change of being in an incorrect output
  * 
- *      Compare letter frequencies against a standard frequency table for the alphabet
- *      
- *      Option for converting numbers into letter versions
- *          Eg "3l1t3" becomes "elite"
- * 
- *  Want it to work with ceasar ciphers mainly but possibly with other ones 
+ *      Option for converting numbers into letter versions?
+ *          Eg "3l1t3" becomes "elite" 
  */
 
 var alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-interface Options {
-    /** The characters that can be shifted. Order matters and should be the same as used to encrypt */
-    alphabet?: string, 
-    frequency?: {
-        includeSpaces: boolean
-    },
-    /** Pass each possible result to a function */
-    onResult?(result: {value: string, progress: number, total: number}): void,
-    /** Should lowercase and uppercase letters be treated the same */
-    ignoreCase?: boolean
-}
-
-var defaultOptions: Options = {
-    alphabet: "abcdefghijklmnopqrstuvwxyz",
+var defaultOptions: ICeaserOptions = {
+    alphabet,
     frequency: {
         includeSpaces: false
     },
@@ -90,17 +53,10 @@ var defaultOptions: Options = {
     ignoreCase: false
 }
 
-for (const letter in frequencyTable) {
-	if (Object.prototype.hasOwnProperty.call(frequencyTable, letter)) {
-		const letterData = frequencyTable[letter];
-		console.log(`${letter}: ${letterData.frequency}`)
-	}
-}
-
-const bruteForce = (encrypted: string, userOptions?: Options) => {
+const bruteForce = (encrypted: string, userOptions?: ICeaserOptions) => {
     // Get options
     const options = {...defaultOptions, ...userOptions}
-    console.log(`Trying ${options.alphabet?.length} combinations`)
+    // console.log(`Trying ${options.alphabet?.length} combinations`)
 
     // Lowercases the input if wanted
     if (options.ignoreCase) encrypted = encrypted.toLowerCase()
@@ -117,12 +73,6 @@ const bruteForce = (encrypted: string, userOptions?: Options) => {
         // Get letter frequencies
         var frequencies = frequency(options.frequency?.includeSpaces? result : result.replace(/[^a-zA-Z]+/gi, ""))
 
-        for (const letter in frequencies) {
-			if (Object.prototype.hasOwnProperty.call(frequencies, letter)) {
-				const letterData = frequencies[letter];
-				// console.log(`${letter}: ${letterData}`)
-			}
-		}
         // Add the word list
         possibilities.push({result, words: findWords(result), shift: i, frequencies })
     }
@@ -132,25 +82,19 @@ const bruteForce = (encrypted: string, userOptions?: Options) => {
         return a.words-b.words
     }).reverse()
 
-    // console.log(possibilities)
-
     // Get highest ranking by words
     var bestGuess = possibilities[0]
 
-    console.log(`Most likey result is "${bestGuess.result}" (${bestGuess.words} words, shift of ${bestGuess.shift})`)
+    // console.log(`Most likey result is "${bestGuess.result}" (${bestGuess.words} words, shift of ${bestGuess.shift})`)
 
-	for (const letter in bestGuess.frequencies) {
-		if (Object.prototype.hasOwnProperty.call(bestGuess.frequencies, letter)) {
-			const letterData = bestGuess.frequencies[letter];
-			const expected = frequencyTable[letter.toUpperCase()].frequency
-			console.log(`${letter}: ${letterData-expected}`)
-		}
-	}
+    return({result: bestGuess.result, words: bestGuess.words, shift: bestGuess.shift})
 }
+
+export default bruteForce
 
 // console.log(frequency("fjewoivnmeoijfowjf 32if e iwewepof i"))
 
-bruteForce("uryyb gurerf zl anzr vf ora", {frequency: {includeSpaces: false}})
+// bruteForce("uryyb gurerf zl anzr vf ora", {frequency: {includeSpaces: false}})
 
 // TODO: use letter frequencies in determining best result
 // TODO: handle no words being found better
